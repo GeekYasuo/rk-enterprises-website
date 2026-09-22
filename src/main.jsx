@@ -38,8 +38,10 @@ const productGroups = [
 
 const reveal = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }
 
-// Replace with your Formspree endpoint (formspree.io -> new form -> rk-enterprises.co address)
-const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'
+// FormSubmit.co needs no signup — it emails a one-time confirmation link to FORM_TARGET_EMAIL
+// the first time this is submitted; enquiries flow through once that link is clicked.
+const FORM_TARGET_EMAIL = 'enquiry@rk-enterprises.co'
+const FORM_ENDPOINT = `https://formsubmit.co/ajax/${FORM_TARGET_EMAIL}`
 
 function ContactForm() {
   const [status, setStatus] = useState('idle')
@@ -63,6 +65,8 @@ function ContactForm() {
   if (status === 'sent') return <div className="form-done"><h3>Message sent.</h3><p>Thanks for reaching out — our team will get back to you shortly.</p></div>
 
   return <form className="enquiry-form" onSubmit={handleSubmit}>
+    <input type="hidden" name="_subject" value="New enquiry from rk-enterprises.co" />
+    <input type="hidden" name="_captcha" value="false" />
     <div className="form-row">
       <label>Name<input type="text" name="name" required /></label>
       <label>Company<input type="text" name="company" /></label>
