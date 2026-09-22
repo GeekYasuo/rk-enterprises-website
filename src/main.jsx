@@ -159,7 +159,8 @@ function App() {
           <div className="contact-copy">
             <p className="eyebrow"><i /> START A CONVERSATION</p><h2>Let's build<br/><em>what's next.</em></h2><p>Tell us what you need. Our team will get back to you with a practical way forward.</p>
             <div className="contact-links">
-              <a href="tel:+919028872590">Call head office <span>→</span></a>
+              <a href="tel:+919028872590">Call +91 90288 72590 <span>→</span></a>
+              <a href="tel:+919029751852">Call +91 90297 51852 <span>→</span></a>
               <a href="mailto:enquiry@rk-enterprises.co">enquiry@rk-enterprises.co <span>→</span></a>
             </div>
           </div>
@@ -169,7 +170,7 @@ function App() {
       <section className="locations section">
         <div className="locations-intro"><p className="eyebrow dark"><i /> FIND US</p><h2>Made close to<br/><em>the work.</em></h2><p>Manufacturing and support from Vasai-Virar, Maharashtra.</p></div>
         <div className="location-map-grid">
-          <article className="location-card"><span>HEAD OFFICE</span><h3>A-1 Complex</h3><p>Gala no: B1 - U-16, A1 Industrial Estate, Kaman, Vasai-Virar, Maharashtra 421302</p><a href="tel:+919028872590">+91 90288 72590 <b>↗</b></a></article>
+          <article className="location-card"><span>HEAD OFFICE</span><h3>A-1 Complex</h3><p>Gala no: B1 - U-16, A1 Industrial Estate, Kaman, Vasai-Virar, Maharashtra 421302</p><div className="location-phones"><a href="tel:+919028872590">+91 90288 72590 <b>↗</b></a><a href="tel:+919029751852">+91 90297 51852 <b>↗</b></a></div></article>
           <div className="location-map">
             <iframe title="RK Enterprises location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Gala+no+B1-U-16+A1+Industrial+Estate+Kaman+Vasai-Virar+Maharashtra+421302&output=embed" />
           </div>
@@ -177,7 +178,7 @@ function App() {
         <div className="business-strip"><div><span>GST NUMBER</span><b>27BDTPS0564A1ZE</b></div><div><span>BUSINESS HOURS</span><b>MON – SAT, 9:00 AM – 6:00 PM</b></div></div>
       </section>
     </main>
-    <footer><button className="brand" onClick={() => nav('top')}><span>RK</span> ENTERPRISES</button><p>Engineered industrial solutions, made in India.</p><div><a href="tel:+919028872590">+91 90288 72590</a><a href="mailto:enquiry@rk-enterprises.co">enquiry@rk-enterprises.co</a><span>© 2026 RK Enterprises</span></div></footer>
+    <footer><button className="brand" onClick={() => nav('top')}><span>RK</span> ENTERPRISES</button><p>Engineered industrial solutions, made in India.</p><div><a href="tel:+919028872590">+91 90288 72590</a><a href="tel:+919029751852">+91 90297 51852</a><a href="mailto:enquiry@rk-enterprises.co">enquiry@rk-enterprises.co</a><span>© 2026 RK Enterprises</span></div></footer>
   </>
 }
 
