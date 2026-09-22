@@ -169,9 +169,9 @@ function App() {
       <section className="locations section">
         <div className="locations-intro"><p className="eyebrow dark"><i /> FIND US</p><h2>Made close to<br/><em>the work.</em></h2><p>Manufacturing and support from Vasai-Virar, Maharashtra.</p></div>
         <div className="location-map-grid">
-          <article className="location-card"><span>HEAD OFFICE</span><h3>A-1 Compound</h3><p>Gala No: 9, A1 Industrial Estate, Kaman, Vasai-Virar, Maharashtra 421302</p><a href="tel:+919028872590">+91 90288 72590 <b>↗</b></a></article>
+          <article className="location-card"><span>HEAD OFFICE</span><h3>A-1 Complex</h3><p>Gala no: B1 - U-16, A1 Industrial Estate, Kaman, Vasai-Virar, Maharashtra 421302</p><a href="tel:+919028872590">+91 90288 72590 <b>↗</b></a></article>
           <div className="location-map">
-            <iframe title="RK Enterprises location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Gala+No+9+A1+Industrial+Estate+Kaman+Vasai-Virar+Maharashtra+421302&output=embed" />
+            <iframe title="RK Enterprises location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Gala+no+B1-U-16+A1+Industrial+Estate+Kaman+Vasai-Virar+Maharashtra+421302&output=embed" />
           </div>
         </div>
         <div className="business-strip"><div><span>GST NUMBER</span><b>27BDTPS0564A1ZE</b></div><div><span>BUSINESS HOURS</span><b>MON – SAT, 9:00 AM – 6:00 PM</b></div></div>
