@@ -176,7 +176,7 @@ function App() {
         <div className="location-map-grid">
           <article className="location-card"><span>HEAD OFFICE</span><h3>A-1 Complex</h3><p>Gala no: B1 - U-16, A1 Industrial Estate, Kaman, Vasai-Virar, Maharashtra 421302</p><div className="location-phones"><a href="tel:+919028872590">+91 90288 72590 <b>↗</b></a><a href="tel:+919029751852">+91 90297 51852 <b>↗</b></a></div></article>
           <div className="location-map">
-            <iframe title="RK Enterprises location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Gala+no+B1-U-16+A1+Industrial+Estate+Kaman+Vasai-Virar+Maharashtra+421302&output=embed" />
+            <iframe title="RK Enterprises location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=A1+Industrial+Estate+Kaman+Vasai-Virar+Maharashtra+421302&output=embed" />
           </div>
         </div>
         <div className="business-strip"><div><span>GST NUMBER</span><b>27BDTPS0564A1ZE</b></div><div><span>BUSINESS HOURS</span><b>MON – SAT, 9:00 AM – 6:00 PM</b></div></div>
