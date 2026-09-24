@@ -1,8 +1,12 @@
 // Single source of truth for the catalogue. Adding a machine = adding an entry here.
 // Spec values stay `null` until RK supplies them; pages render null as "On request"
-// rather than inventing numbers.
+// rather than inventing numbers. Descriptions explain how each machine type works in
+// general; RK should review them against its own builds.
 
 export type Spec = { label: string; value: string | null }
+
+// Simplified process flow drawn on the machine page: what goes in, what the machine does, what comes out.
+export type Flow = { in: string[]; action: string; out: string[] }
 
 export type Product = {
   slug: string
@@ -10,9 +14,10 @@ export type Product = {
   stage: StageId
   image: string
   summary: string
-  applications?: string[]
-  howItWorks?: string[]
-  specs?: Spec[]
+  applications: string[]
+  howItWorks: string[]
+  specs: Spec[]
+  flow?: Flow
 }
 
 export type StageId = 'liquid' | 'milling' | 'coating' | 'drying' | 'blending' | 'granulation'
@@ -26,9 +31,10 @@ export const stages: { id: StageId; name: string; blurb: string; cover: string }
   { id: 'granulation', name: 'Sifting, granulation & storage', blurb: 'Screening, granulating, material handling and WFI storage.', cover: 'rapid-mixer-granulator' },
 ]
 
-const tbc = (...labels: string[]): Spec[] => labels.map((label) => ({ label, value: null }))
+const onRequest = (...labels: string[]): Spec[] => labels.map((label) => ({ label, value: null }))
 
 export const products: Product[] = [
+  // ── Liquid processing ──
   {
     slug: 'sparkler-filter-press', name: 'Sparkler Filter Press', stage: 'liquid', image: 'imgi_2_sparkler-filter-press.png',
     summary: 'Horizontal-plate pressure filter for clarifying syrups, oils, solvents and other liquids in batch production.',
@@ -39,25 +45,239 @@ export const products: Product[] = [
       'Solids stay on the media; clear filtrate collects in the central channel and leaves through the outlet.',
       'Between batches the vessel is opened, and the plate stack is lifted out for cleaning and media change.',
     ],
-    specs: tbc('Model range', 'Number of plates', 'Plate diameter', 'Filtration area', 'Output', 'Pump & motor', 'Contact-part material', 'Surface finish', 'Gaskets'),
+    specs: onRequest('Model range', 'Number of plates', 'Plate diameter', 'Filtration area', 'Output', 'Pump & motor', 'Contact-part material', 'Surface finish', 'Gaskets'),
   },
-  { slug: 'zero-hold-up-filter-press', name: 'Zero Hold-Up Filter Press', stage: 'liquid', image: 'imgi_4_zero-hold-up-filter-press2.png', summary: 'Complete evacuation of the batch with minimal product loss.' },
-  { slug: 'inline-homogenizer', name: 'Inline Homogenizer', stage: 'liquid', image: 'imgi_3_inline-homogenizer.png', summary: 'Precise emulsification and particle size reduction.' },
-  { slug: 'ml-catch-pot', name: 'ML Catch Pot', stage: 'liquid', image: 'imgi_5_ML-catch-pot.png', summary: 'A safe, sanitary vessel for material collection.' },
-  { slug: 'multi-mill', name: 'Multi Mill', stage: 'milling', image: 'imgi_6_multi-mill1.png', summary: 'Versatile size reduction for production use.' },
-  { slug: 'colloid-mill', name: 'Colloid Mill', stage: 'milling', image: 'imgi_7_colloid-mill.png', summary: 'High-shear milling for fine particle reduction.' },
-  { slug: 'coating-pan', name: 'Coating Pan', stage: 'coating', image: 'imgi_8_coating-pan.png', summary: 'Uniform coating for tablets and pills.' },
-  { slug: 'tray-dryer', name: 'Tray Dryer', stage: 'drying', image: 'imgi_10_tray-dryer.png', summary: 'An efficient batch drying solution.' },
-  { slug: 'vacuum-tray-dryer', name: 'Vacuum Tray Dryer', stage: 'drying', image: 'vacuum-tray-dryer.png', summary: 'Low-temperature drying for sensitive materials.' },
-  { slug: 'fluid-bed-dryer', name: 'Fluid Bed Dryer', stage: 'drying', image: 'imgi_12_fluid-bed-dryer3.png', summary: 'Uniform moisture removal with fluidised-bed technology.' },
-  { slug: 'rotocon-vacuum-dryer', name: 'Rotocon Vacuum Dryer', stage: 'drying', image: 'imgi_13_rotocon-vacuum-dryer-1.png', summary: 'Rotary vacuum drying for dependable operation.' },
-  { slug: 'octagonal-blender', name: 'Octagonal Blender', stage: 'blending', image: 'octagonal-blender.png', summary: 'Gentle mixing for uniform blend quality.' },
-  { slug: 'double-cone-blender', name: 'Double Cone Blender', stage: 'blending', image: 'imgi_15_double-cone-blender.png', summary: 'Efficient powder blending with tumbling action.' },
-  { slug: 'ribbon-blender', name: 'Ribbon Blender', stage: 'blending', image: 'imgi_16_ribbon-blender.png', summary: 'High-capacity mixing for dry powders.' },
-  { slug: 'vibro-sifter', name: 'Vibro Sifter', stage: 'granulation', image: 'imgi_17_vibro-sifter-new1.png', summary: 'Precision screening and particle grading.' },
-  { slug: 'rapid-mixer-granulator', name: 'Rapid Mixer Granulator', stage: 'granulation', image: 'imgi_18_rapid-mixer-granulator1.png', summary: 'High-speed mixing and granulation in one unit.' },
-  { slug: 'ipc-bin', name: 'IPC Bin', stage: 'granulation', image: 'imgi_19_IPC-bin.png', summary: 'Safe material handling and intermediate storage.' },
-  { slug: 'wfi-storage-tank', name: 'WFI Storage Tank', stage: 'granulation', image: 'imgi_20_wfi-storage-tank-1.png', summary: 'Storage systems for water for injection.' },
+  {
+    slug: 'zero-hold-up-filter-press', name: 'Zero Hold-Up Filter Press', stage: 'liquid', image: 'imgi_4_zero-hold-up-filter-press2.png',
+    summary: 'Plate filter press with a separate scavenger plate that filters the last of the batch, so no unfiltered liquid is left behind in the vessel.',
+    applications: ['Syrups and oral liquids', 'High-value liquids where losses matter', 'Oils and solvents', 'Cosmetic liquids', 'Chemical process liquids'],
+    howItWorks: [
+      'Liquid is pumped into the vessel and filters down through the stack of horizontal plates.',
+      'Near the end of the batch, the remaining liquid settles below the main plate stack.',
+      'A scavenger plate at the bottom, with its own outlet, filters this residual liquid.',
+      'The whole batch is filtered, with no unfiltered hold-up left in the vessel.',
+    ],
+    flow: { in: ['Unfiltered liquid'], action: 'Plate stack + scavenger plate', out: ['Clear filtrate', 'No unfiltered residue'] },
+    specs: onRequest('Model range', 'Number of plates', 'Plate diameter', 'Filtration area', 'Output', 'Scavenger plate', 'Pump & motor', 'Contact-part material', 'Surface finish'),
+  },
+  {
+    slug: 'inline-homogenizer', name: 'Inline Homogenizer', stage: 'liquid', image: 'imgi_3_inline-homogenizer.png',
+    summary: 'High-shear rotor–stator mixer fitted into the pipeline, for emulsions, dispersions and droplet or particle size reduction.',
+    applications: ['Creams, lotions and emulsions', 'Syrups and suspensions', 'Sauces and food emulsions', 'Chemical dispersions'],
+    howItWorks: [
+      'Product is pumped into the homogenizer head from a tank or process line.',
+      'A high-speed rotor draws it into a close-fitting stator.',
+      'Intense shear in the rotor–stator gap breaks droplets and particles down.',
+      'Product leaves in a single pass, or recirculates to the tank until it reaches the target consistency.',
+    ],
+    flow: { in: ['Premix from tank or line'], action: 'Rotor–stator shear', out: ['Emulsion or dispersion', 'Recirculate if needed'] },
+    specs: onRequest('Model range', 'Flow rate', 'Motor power', 'Rotor speed', 'Rotor–stator type', 'Inlet / outlet connections', 'Contact-part material', 'Seal type'),
+  },
+  {
+    slug: 'ml-catch-pot', name: 'ML Catch Pot', stage: 'liquid', image: 'imgi_5_ML-catch-pot.png',
+    summary: 'Collection vessel for mother liquor and condensate, fitted in vacuum and filtration lines to capture liquid before it reaches the vacuum pump.',
+    applications: ['Nutsche filter and centrifuge lines', 'Vacuum drying systems', 'Solvent recovery', 'API and bulk drug plants'],
+    howItWorks: [
+      'The catch pot is connected between the process equipment and the vacuum source.',
+      'Under vacuum, mother liquor or condensate is drawn into the vessel.',
+      'Liquid collects in the pot while the vacuum line continues on to the pump.',
+      'The collected liquid is drained through the bottom outlet for recovery or disposal.',
+    ],
+    flow: { in: ['Mother liquor or condensate'], action: 'Collection under vacuum', out: ['Liquid to drain or recovery', 'Vacuum line to pump'] },
+    specs: onRequest('Capacity', 'Operating vacuum / pressure', 'Nozzles & connections', 'Sight glass', 'Contact-part material', 'Surface finish'),
+  },
+
+  // ── Milling ──
+  {
+    slug: 'multi-mill', name: 'Multi Mill', stage: 'milling', image: 'imgi_6_multi-mill1.png',
+    summary: 'High-speed rotary mill with knife and impact blades, for granulating, pulverising and sizing wet and dry materials.',
+    applications: ['Sizing wet and dry granules', 'Pulverising', 'Herbal and ayurvedic materials', 'Spices and food ingredients', 'Chemicals and pigments'],
+    howItWorks: [
+      'Material is fed into the hopper.',
+      'Rotating blades, knife edge or impact edge depending on the direction of rotation, cut or strike the material.',
+      'Particles are forced through an interchangeable screen that sets the output size.',
+      'Sized material is discharged below the screen into a container.',
+    ],
+    flow: { in: ['Wet or dry material'], action: 'Rotating blades + screen', out: ['Sized granules or powder'] },
+    specs: onRequest('Output', 'Rotor speed', 'Motor power', 'Blade type', 'Screen sizes', 'Contact-part material', 'Surface finish'),
+  },
+  {
+    slug: 'colloid-mill', name: 'Colloid Mill', stage: 'milling', image: 'imgi_7_colloid-mill.png',
+    summary: 'Rotor–stator mill with an adjustable gap, for fine grinding, emulsifying and homogenising liquids and pastes.',
+    applications: ['Ointments, creams and pastes', 'Suspensions and syrups', 'Sauces, pastes and nut butters', 'Chemical emulsions'],
+    howItWorks: [
+      'Product is fed in through the hopper.',
+      'It passes through a narrow, adjustable gap between a high-speed rotor and a fixed stator.',
+      'Shear and turbulence in the gap reduce particle and droplet size.',
+      'Processed product leaves through the outlet, and can be recirculated for a finer result.',
+    ],
+    flow: { in: ['Liquid or paste'], action: 'Adjustable rotor–stator gap', out: ['Fine, uniform product', 'Recirculate if needed'] },
+    specs: onRequest('Output', 'Motor power', 'Rotor speed', 'Gap adjustment range', 'Cooling jacket', 'Contact-part material'),
+  },
+
+  // ── Coating ──
+  {
+    slug: 'coating-pan', name: 'Coating Pan', stage: 'coating', image: 'imgi_8_coating-pan.png',
+    summary: 'Rotating pan for sugar coating, polishing and coating tablets, pills and granules.',
+    applications: ['Sugar coating tablets', 'Pill and granule coating', 'Polishing', 'Confectionery coating'],
+    howItWorks: [
+      'Tablets are loaded into the pan, which is mounted at an angle.',
+      'The pan rotates, keeping the tablets tumbling continuously.',
+      'Coating solution is applied while hot air dries each layer.',
+      'Layers build up until the coating is complete, and the batch is unloaded.',
+    ],
+    flow: { in: ['Uncoated tablets', 'Coating solution', 'Hot air'], action: 'Rotating, tilted pan', out: ['Coated tablets'] },
+    specs: onRequest('Pan diameter', 'Batch capacity', 'Pan speed', 'Motor power', 'Hot-air blower & heater', 'Pan material'),
+  },
+
+  // ── Drying ──
+  {
+    slug: 'tray-dryer', name: 'Tray Dryer', stage: 'drying', image: 'imgi_10_tray-dryer.png',
+    summary: 'Batch dryer that circulates heated air over trays of wet material inside an insulated cabinet.',
+    applications: ['Granules and powders', 'Pharmaceutical intermediates', 'Herbs, spices and food products', 'Chemicals and pigments'],
+    howItWorks: [
+      'Wet material is spread on trays, which are loaded into the cabinet on racks or trolleys.',
+      'Fans circulate air over steam or electric heaters.',
+      'The heated air passes across the trays, evaporating moisture from the material.',
+      'Some moist air is exhausted and replaced with fresh air until drying is complete.',
+    ],
+    flow: { in: ['Wet material on trays', 'Heated air'], action: 'Circulating hot air', out: ['Dry product', 'Moist exhaust air'] },
+    specs: onRequest('Number of trays', 'Tray size', 'Heating (steam / electric)', 'Temperature range', 'Fan & motor', 'Contact-part material', 'Insulation'),
+  },
+  {
+    slug: 'vacuum-tray-dryer', name: 'Vacuum Tray Dryer', stage: 'drying', image: 'vacuum-tray-dryer.png',
+    summary: 'Tray dryer that works under vacuum, so moisture and solvents evaporate at lower temperatures. Suited to heat-sensitive and solvent-wet materials.',
+    applications: ['Heat-sensitive APIs', 'Solvent-wet products', 'Hygroscopic materials', 'Oxidation-sensitive materials'],
+    howItWorks: [
+      'Material is placed on trays that sit on heated shelves inside a sealed chamber.',
+      'A vacuum pump lowers the pressure inside the chamber.',
+      'Moisture or solvent evaporates at a lower temperature, taking heat from the shelves.',
+      'Vapours pass to a condenser for recovery, and the dry product is removed at the end of the cycle.',
+    ],
+    flow: { in: ['Wet material on heated shelves'], action: 'Drying under vacuum', out: ['Dry product', 'Vapour to condenser'] },
+    specs: onRequest('Number of shelves', 'Tray size', 'Heating medium', 'Vacuum level', 'Condenser & receiver', 'Contact-part material'),
+  },
+  {
+    slug: 'fluid-bed-dryer', name: 'Fluid Bed Dryer', stage: 'drying', image: 'imgi_12_fluid-bed-dryer3.png',
+    summary: 'Dryer that suspends wet granules in a rising stream of hot air, drying them quickly and evenly.',
+    applications: ['Granules before compression', 'Food powders and granules', 'Nutraceutical granules', 'Chemicals'],
+    howItWorks: [
+      'Wet granules are loaded into the product container.',
+      'Heated, filtered air is blown up through its perforated base.',
+      'The air lifts and suspends the particles, so the bed "fluidises" and every granule is surrounded by hot air.',
+      'Filter bags hold back fine particles while moist air exhausts; drying stops at the target moisture.',
+    ],
+    flow: { in: ['Wet granules', 'Heated, filtered air'], action: 'Fluidised bed', out: ['Dry granules', 'Exhaust air through filter bags'] },
+    specs: onRequest('Batch capacity', 'Container volume', 'Heating (steam / electric)', 'Blower & motor', 'Filter bags', 'Contact-part material', 'Controls'),
+  },
+  {
+    slug: 'rotocon-vacuum-dryer', name: 'Rotocon Vacuum Dryer', stage: 'drying', image: 'imgi_13_rotocon-vacuum-dryer-1.png',
+    summary: 'Rotating, jacketed double-cone vessel that dries under vacuum, turning the product continuously for even, gentle drying.',
+    applications: ['APIs and bulk drugs', 'Solvent-wet products', 'Heat-sensitive chemicals', 'Powders that need gentle turning while drying'],
+    howItWorks: [
+      'Wet product is charged into the jacketed cone-shaped vessel.',
+      'Heating fluid circulates through the jacket while vacuum is applied.',
+      'The vessel rotates slowly, turning the product so it keeps meeting the heated wall.',
+      'Vapours pass through a filter to the condenser, and dry product is discharged through the bottom valve.',
+    ],
+    flow: { in: ['Wet product', 'Heating fluid in jacket'], action: 'Rotating under vacuum', out: ['Dry powder', 'Vapour to condenser'] },
+    specs: onRequest('Working capacity', 'Gross volume', 'Jacket heating medium', 'Vacuum level', 'Rotation speed', 'Motor & drive', 'Contact-part material'),
+  },
+
+  // ── Blending ──
+  {
+    slug: 'octagonal-blender', name: 'Octagonal Blender', stage: 'blending', image: 'octagonal-blender.png',
+    summary: 'Tumble blender with an octagonal container, for gentle, uniform mixing of dry powders and granules.',
+    applications: ['Lubrication blending before compression', 'Granule blending', 'Nutraceutical premixes', 'Food and chemical powders'],
+    howItWorks: [
+      'Powders or granules are loaded into the octagonal container, leaving space for the material to move.',
+      'The container rotates slowly about a horizontal axis.',
+      'Its octagonal shape folds and tumbles the material with each turn, without heavy shear.',
+      'After the set blending time, the blend is discharged through the bottom valve.',
+    ],
+    flow: { in: ['Dry powders or granules'], action: 'Tumbling octagonal container', out: ['Uniform blend'] },
+    specs: onRequest('Working capacity', 'Gross volume', 'Rotation speed', 'Motor & gearbox', 'Discharge valve', 'Contact-part material'),
+  },
+  {
+    slug: 'double-cone-blender', name: 'Double Cone Blender', stage: 'blending', image: 'imgi_15_double-cone-blender.png',
+    summary: 'Tumble blender with two cones joined at the centre, for uniform mixing of free-flowing dry powders and granules.',
+    applications: ['Dry powder blending', 'Granule blending', 'Food and nutraceutical premixes', 'Chemical powders'],
+    howItWorks: [
+      'Material is loaded through the charging port.',
+      'The vessel rotates about a horizontal axis through its centre.',
+      'With each turn, the material cascades between the two cones, splitting and recombining.',
+      'The finished blend is discharged through the valve at the cone tip.',
+    ],
+    flow: { in: ['Dry powders or granules'], action: 'Tumbling double cone', out: ['Uniform blend'] },
+    specs: onRequest('Working capacity', 'Gross volume', 'Rotation speed', 'Motor & gearbox', 'Discharge valve', 'Contact-part material'),
+  },
+  {
+    slug: 'ribbon-blender', name: 'Ribbon Blender', stage: 'blending', image: 'imgi_16_ribbon-blender.png',
+    summary: 'U-shaped trough with a double helical ribbon agitator, for high-volume mixing of dry powders and pastes.',
+    applications: ['Dry powder premixes', 'Spice and food blends', 'Chemical and fertiliser powders', 'Adding small amounts of liquid to powders'],
+    howItWorks: [
+      'Material is loaded into the horizontal U-shaped trough.',
+      'A central shaft carries an outer and an inner ribbon, wound in opposite directions.',
+      'As it turns, one ribbon moves material towards the ends and the other moves it back towards the centre.',
+      'This counter-flow mixes the whole batch, which is then discharged through the bottom valve.',
+    ],
+    flow: { in: ['Dry powders or pastes'], action: 'Counter-flow ribbons', out: ['Uniform blend'] },
+    specs: onRequest('Working capacity', 'Gross volume', 'Agitator speed', 'Motor & gearbox', 'Discharge valve', 'Contact-part material'),
+  },
+
+  // ── Sifting, granulation & storage ──
+  {
+    slug: 'vibro-sifter', name: 'Vibro Sifter', stage: 'granulation', image: 'imgi_17_vibro-sifter-new1.png',
+    summary: 'Vibrating screen separator for sifting, grading and removing oversize particles from powders and granules.',
+    applications: ['Sifting raw material powders', 'Grading granules', 'Removing lumps and foreign particles', 'Food, chemical and pharma powders'],
+    howItWorks: [
+      'Material is fed onto the top screen.',
+      'A vibratory motor with eccentric weights makes the screen deck vibrate.',
+      'Fine particles pass through the mesh while oversize particles travel to the outer edge.',
+      'Each fraction leaves through its own outlet; extra decks grade the material into more sizes.',
+    ],
+    flow: { in: ['Powder or granules'], action: 'Vibrating mesh screen', out: ['Sifted fines', 'Oversize separated'] },
+    specs: onRequest('Screen diameter', 'Number of decks', 'Output', 'Vibratory motor', 'Mesh sizes', 'Contact-part material'),
+  },
+  {
+    slug: 'rapid-mixer-granulator', name: 'Rapid Mixer Granulator', stage: 'granulation', image: 'imgi_18_rapid-mixer-granulator1.png',
+    summary: 'Mixes dry powders and forms wet granules in the same bowl, using a high-speed impeller and chopper.',
+    applications: ['Wet granulation for tablets', 'Dry mixing', 'Nutraceutical and food granules', 'Chemical granules'],
+    howItWorks: [
+      'Dry powders are loaded into the bowl and mixed by the main impeller.',
+      'Binder solution is added while mixing continues.',
+      'The impeller builds granules while the high-speed side chopper breaks up oversized lumps.',
+      'Wet granules are discharged through the side valve, ready for drying.',
+    ],
+    flow: { in: ['Dry powders', 'Binder solution'], action: 'Impeller + chopper', out: ['Wet granules to dryer'] },
+    specs: onRequest('Working capacity', 'Gross volume', 'Impeller motor & speed', 'Chopper motor & speed', 'Discharge valve', 'Contact-part material', 'Controls'),
+  },
+  {
+    slug: 'ipc-bin', name: 'IPC Bin', stage: 'granulation', image: 'imgi_19_IPC-bin.png',
+    summary: 'In-process container for storing and moving granules and powders between process steps, closed against contamination.',
+    applications: ['Transfer between granulation, blending and compression', 'In-process storage', 'Dust-controlled powder handling'],
+    howItWorks: [
+      'Material from one process step is charged into the bin through the top lid.',
+      'The closed bin is moved to the next step on its wheels or with a lift.',
+      'It is raised or positioned above the next machine.',
+      'Material is discharged by gravity through the bottom valve.',
+    ],
+    flow: { in: ['Granules or powder from one step'], action: 'Closed, mobile container', out: ['Gravity discharge to next step'] },
+    specs: onRequest('Capacity', 'Shape', 'Discharge valve', 'Wheels & mobility', 'Contact-part material', 'Surface finish'),
+  },
+  {
+    slug: 'wfi-storage-tank', name: 'WFI Storage Tank', stage: 'granulation', image: 'imgi_20_wfi-storage-tank-1.png',
+    summary: 'Stainless steel tanks for storing water for injection (WFI) and purified water, built for hygienic storage and circulation.',
+    applications: ['Water for injection', 'Purified water', 'Pharmaceutical utility systems', 'Hygienic liquid storage'],
+    howItWorks: [
+      'Water from the generation system enters the tank.',
+      'A vent filter protects the stored water as the level rises and falls.',
+      'Water circulates in a loop through the distribution system to the points of use.',
+      'Spray balls and drain valves allow the tank to be cleaned and sanitised.',
+    ],
+    flow: { in: ['WFI or purified water from generation'], action: 'Hygienic storage', out: ['Distribution loop to points of use'] },
+    specs: onRequest('Capacity', 'Orientation', 'Jacket & insulation', 'Vent filter', 'Spray ball', 'Contact-part material', 'Surface finish'),
+  },
 ]
 
 export const stageOf = (id: StageId) => stages.find((s) => s.id === id)!

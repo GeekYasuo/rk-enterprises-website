@@ -1,0 +1,44 @@
+---
+import type { Product } from '../data/products'
+interface Props { product: Product }
+const { product } = Astro.props
+const flow = product.flow!
+---
+<figure class="plate flow" aria-label={`Simplified process flow for the ${product.name}`}>
+  <div class="stream">
+    <span class="note tag">In</span>
+    <ul>{flow.in.map((i) => <li>{i}</li>)}</ul>
+  </div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="machine">
+    <img src={`/machines/${product.image}`} alt="" loading="lazy" />
+    <div>
+      <span class="note">{product.name}</span>
+      <strong>{flow.action}</strong>
+    </div>
+  </div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="stream out">
+    <span class="note tag">Out</span>
+    <ul>{flow.out.map((o) => <li>{o}</li>)}</ul>
+  </div>
+  <figcaption class="note">Simplified process flow</figcaption>
+</figure>
+
+<style>
+  .flow { margin: 0; padding: 28px 28px 40px; display: grid; justify-items: center; gap: 0 }
+  .stream { width: 100%; max-width: 380px; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: start }
+  .tag { padding-top: 11px; color: var(--accent) }
+  .out .tag { color: var(--wa) }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px }
+  li { padding: 9px 12px; border: 1px solid var(--line-strong); background: var(--paper); font-size: 14.5px; font-weight: 500 }
+  .arrow { position: relative; width: 2px; height: 36px; background: var(--ink) }
+  .arrow::after { content: ''; position: absolute; left: 50%; bottom: -1px; width: 8px; height: 8px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: translateX(-50%) rotate(45deg) }
+  .machine { width: 100%; max-width: 380px; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; align-items: center; padding: 14px; border: 2px solid var(--ink); background: var(--sheet) }
+  .machine img { width: 96px; aspect-ratio: 1; object-fit: contain; mix-blend-mode: multiply }
+  .machine div { display: grid; gap: 4px }
+  .machine .note { font-size: 10.5px }
+  .machine strong { font-family: var(--display); font-stretch: 85%; font-weight: 700; font-size: 20px; line-height: 1.15 }
+  figcaption { position: absolute; left: 16px; bottom: 12px; font-size: 11px }
+  @media (max-width: 480px) { .flow { padding: 20px 16px 40px } .machine { grid-template-columns: 72px minmax(0, 1fr) } .machine img { width: 72px } .machine strong { font-size: 18px } }
+</style>
