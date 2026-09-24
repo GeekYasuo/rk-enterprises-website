@@ -1,0 +1,169 @@
+---
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import { stages, productsIn, company, waLink, tel } from '../data/products'
+---
+<Base title="Request a Quote" description="Request a quote for process equipment from RK Enterprises, Vasai-Virar. Choose the machines you need, share your batch size, and we'll recommend a model.">
+  <section class="head grid-paper">
+    <div class="wrap">
+      <h1 class="display h1">Request a quote</h1>
+      <p class="lead">Pick the machines you're interested in and tell us about your process. The more detail you share, the more precise our recommendation.</p>
+    </div>
+  </section>
+
+  <div class="wrap layout">
+    <form id="quote" class="form" novalidate>
+      <input type="hidden" name="_subject" value="Quote request from rk-enterprises.co" />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <fieldset class="field machines">
+        <legend>Machines <span class="hint">(choose one or more)</span></legend>
+        {stages.map((s) => (
+          <div class="group">
+            <p class="note">{s.name}</p>
+            <div class="options">
+              {productsIn(s.id).map((p) => (
+                <label class="opt"><input type="checkbox" name="machines" value={p.name} data-slug={p.slug} /><span>{p.name}</span></label>
+              ))}
+            </div>
+          </div>
+        ))}
+        <p class="error" id="machines-error" hidden>Choose at least one machine, or describe what you need below.</p>
+      </fieldset>
+
+      <div class="pair">
+        <div class="field"><label for="capacity">Batch size or capacity</label><input class="input" id="capacity" name="capacity" placeholder="e.g. 500 L per batch" /></div>
+        <div class="field"><label for="timeline">When do you need it?</label>
+          <select class="input" id="timeline" name="timeline">
+            <option value="">Select</option><option>Within 1 month</option><option>1–3 months</option><option>3–6 months</option><option>Just researching</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field"><label for="message">Your product and process</label><textarea class="input" id="message" name="message" placeholder="What are you processing? Any material, finish or documentation requirements?"></textarea></div>
+
+      <div class="pair">
+        <div class="field"><label for="name">Your name *</label><input class="input" id="name" name="name" autocomplete="name" required /><p class="error" hidden>Enter your name.</p></div>
+        <div class="field"><label for="company">Company</label><input class="input" id="company" name="company" autocomplete="organization" /></div>
+      </div>
+      <div class="pair">
+        <div class="field"><label for="phone">Phone / WhatsApp *</label><input class="input" id="phone" name="phone" type="tel" autocomplete="tel" required pattern="[0-9+()\-\s]{8,}" /><p class="error" hidden>Enter a phone number we can reach you on.</p></div>
+        <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" /><p class="error" hidden>Check the email address.</p></div>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn btn-primary" type="submit">Send quote request <Icon name="arrow" size={16} /></button>
+        <p class="status" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <aside class="side">
+      <div class="plate panel">
+        <h2 class="h3">Faster on WhatsApp</h2>
+        <p class="muted">Send photos, drawings or a quick message and we'll reply there.</p>
+        <a class="btn btn-wa" href={waLink("Hi RK Enterprises, I'd like a quote.")} target="_blank" rel="noopener"><Icon name="chat" size={18} /> WhatsApp us</a>
+      </div>
+      <dl class="title-block office" style="--cols:1">
+        <div><dt class="note">Call</dt><dd>{company.phones.map((p) => <a class="num" href={tel(p)}>{p}</a>)}</dd></div>
+        <div><dt class="note">Email</dt><dd><a href={`mailto:${company.email}`}>{company.email}</a></dd></div>
+        <div><dt class="note">Head office</dt><dd>{company.address.map((l) => <span>{l}</span>)}</dd></div>
+        <div><dt class="note">Hours</dt><dd>{company.hours}</dd></div>
+      </dl>
+      <iframe class="map" title="RK Enterprises location on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src={`${company.mapUrl}&output=embed`}></iframe>
+    </aside>
+  </div>
+</Base>
+
+<script>
+  // FormSubmit.co needs no account: the first submission sends a one-time confirmation
+  // email to the inbox; after that, enquiries arrive directly.
+  const ENDPOINT = 'https://formsubmit.co/ajax/enquiry@rk-enterprises.co'
+  const form = document.getElementById('quote') as HTMLFormElement
+  const status = form.querySelector('.status') as HTMLElement
+  const button = form.querySelector('button[type=submit]') as HTMLButtonElement
+
+  // Pre-select the machine a visitor came from (/contact/?machine=slug)
+  const slug = new URLSearchParams(location.search).get('machine')
+  if (slug) {
+    const box = form.querySelector<HTMLInputElement>(`input[data-slug="${CSS.escape(slug)}"]`)
+    if (box) box.checked = true
+  }
+
+  const showError = (input: HTMLInputElement, bad: boolean) => {
+    input.setAttribute('aria-invalid', String(bad))
+    const msg = input.parentElement?.querySelector('.error') as HTMLElement | null
+    if (msg) msg.hidden = !bad
+  }
+  form.querySelectorAll<HTMLInputElement>('input[required], input[type=email]').forEach((input) => {
+    input.addEventListener('blur', () => { if (input.value) showError(input, !input.checkValidity()) })
+    input.addEventListener('input', () => { if (input.getAttribute('aria-invalid') === 'true') showError(input, !input.checkValidity()) })
+  })
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    let firstBad: HTMLInputElement | null = null
+    form.querySelectorAll<HTMLInputElement>('input[required], input[type=email]').forEach((input) => {
+      const bad = !input.checkValidity()
+      showError(input, bad)
+      if (bad && !firstBad) firstBad = input
+    })
+    const anyMachine = form.querySelector('input[name=machines]:checked')
+    const message = (form.elements.namedItem('message') as HTMLTextAreaElement).value.trim()
+    const machinesError = document.getElementById('machines-error')!
+    machinesError.hidden = Boolean(anyMachine || message)
+    if (firstBad) { (firstBad as HTMLInputElement).focus(); return }
+    if (!anyMachine && !message) { machinesError.scrollIntoView({ block: 'center' }); return }
+
+    const data = new FormData(form)
+    data.set('machines', data.getAll('machines').join(', '))
+    button.disabled = true
+    status.textContent = 'Sending…'
+    try {
+      const res = await fetch(ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: data })
+      if (!res.ok) throw new Error(String(res.status))
+      form.reset()
+      status.textContent = 'Request sent. We’ll get back to you with a recommendation.'
+      status.dataset.state = 'ok'
+    } catch {
+      status.textContent = 'Couldn’t send your request. Check your connection and try again, or reach us on WhatsApp.'
+      status.dataset.state = 'error'
+    } finally {
+      button.disabled = false
+    }
+  })
+</script>
+
+<style>
+  .head { border-bottom: 1px solid var(--line); padding-block: clamp(40px, 6vw, 80px) }
+  .head .wrap { display: grid; gap: 18px; justify-items: start }
+  .layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; padding-block: clamp(40px, 6vw, 72px) clamp(64px, 8vw, 112px) }
+  @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) } }
+  .form { display: grid; gap: 22px }
+  .hp { position: absolute; left: -9999px }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0 }
+  .machines { display: grid; gap: 16px; padding: 20px; background: var(--sheet); border: 1px solid var(--line-strong) }
+  .machines legend { float: left; width: 100%; margin-bottom: 4px }
+  .group { display: grid; gap: 8px }
+  .options { display: flex; flex-wrap: wrap; gap: 6px }
+  .field .opt { position: relative; cursor: pointer; font: 400 14px/1.3 var(--body); letter-spacing: 0; text-transform: none; color: var(--ink) }
+  .opt input { position: absolute; opacity: 0; width: 1px; height: 1px }
+  .opt span { display: inline-block; padding: 8px 12px; border: 1px solid var(--line-strong); background: var(--paper); font-size: 14px; transition: background-color .15s ease, border-color .15s ease, color .15s ease }
+  .opt input:checked + span { background: var(--ink); border-color: var(--ink); color: #fff }
+  .opt input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px }
+  @media (hover: hover) { .opt:hover span { border-color: var(--ink) } }
+  .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px }
+  @media (max-width: 560px) { .pair { grid-template-columns: minmax(0, 1fr) } }
+  .submit-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center }
+  .btn:disabled { opacity: .6; cursor: progress }
+  .status { font-size: 14.5px; font-weight: 500 }
+  .status[data-state='ok'] { color: var(--wa) }
+  .status[data-state='error'] { color: var(--accent) }
+  .side { display: grid; gap: 16px; position: sticky; top: calc(var(--header-h) + 24px) }
+  @media (max-width: 900px) { .side { position: static } }
+  .panel { padding: 24px; display: grid; gap: 12px; justify-items: start }
+  .office dd { display: grid; gap: 2px }
+  .office a { text-decoration: none }
+  .office > div + div { border-left: 0; border-top: 1px solid var(--line) }
+  .map { width: 100%; aspect-ratio: 4 / 3; border: 1px solid var(--line-strong); filter: grayscale(.3) }
+</style>

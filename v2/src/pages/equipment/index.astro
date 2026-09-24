@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro'
+import ProductCard from '../../components/ProductCard.astro'
+import { products, stages, productsIn } from '../../data/products'
+---
+<Base title="Process Equipment Catalogue" description={`All ${products.length} machines from RK Enterprises: filter presses, homogenizers, mills, coating pans, dryers, blenders, sifters, granulators and storage, organised by process step.`}>
+  <section class="head grid-paper">
+    <div class="wrap">
+      <p class="note">Catalogue · <span class="num">{products.length}</span> machines in <span class="num">{stages.length}</span> process steps</p>
+      <h1 class="display h1">Equipment</h1>
+      <p class="lead">Every machine is built to order. Open any machine for details, or ask us which one fits your process.</p>
+    </div>
+  </section>
+
+  <nav class="stage-nav" aria-label="Process steps">
+    <div class="wrap row">
+      {stages.map((s) => <a href={`#${s.id}`}>{s.name} <span class="num">{productsIn(s.id).length}</span></a>)}
+    </div>
+  </nav>
+
+  <div class="wrap list">
+    {stages.map((s) => (
+      <section id={s.id} class="stage">
+        <header class="stage-head">
+          <h2 class="display h3x">{s.name}</h2>
+          <p class="muted">{s.blurb}</p>
+        </header>
+        <div class="cards">{productsIn(s.id).map((p) => <ProductCard product={p} />)}</div>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .head { border-bottom: 1px solid var(--line); padding-block: clamp(40px, 6vw, 80px) }
+  .head .wrap { display: grid; gap: 18px; justify-items: start }
+  .stage-nav { position: sticky; top: var(--header-h); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line) }
+  .row { display: flex; gap: 8px; overflow-x: auto; padding-block: 12px; scrollbar-width: none }
+  .row a { flex: none; display: inline-flex; gap: 8px; align-items: center; padding: 8px 12px; border: 1px solid var(--line-strong); background: var(--sheet); text-decoration: none; font-size: 14px; font-weight: 500; transition: border-color .15s ease, background-color .15s ease }
+  .row a .num { font-size: 12px; color: var(--ink-3) }
+  @media (hover: hover) { .row a:hover { border-color: var(--ink) } }
+  .list { padding-bottom: clamp(64px, 8vw, 112px) }
+  .stage { padding-top: clamp(48px, 6vw, 80px); scroll-margin-top: calc(var(--header-h) + 70px) }
+  .stage-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 32px; padding-bottom: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--ink) }
+  .h3x { font-size: clamp(28px, 3.2vw, 40px) }
+</style>

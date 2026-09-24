@@ -1,0 +1,13 @@
+---
+import Icon from './Icon.astro'
+import { waLink } from '../data/products'
+interface Props { message?: string }
+const { message = "Hi RK Enterprises, I'd like to enquire about your process equipment." } = Astro.props
+---
+<a class="wa-float" href={waLink(message)} target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><Icon name="chat" size={22} /><span>WhatsApp</span></a>
+
+<style>
+  .wa-float { position: fixed; z-index: 30; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: none; align-items: center; gap: 8px; background: var(--wa); color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; padding: 12px 16px 12px 14px; border-radius: 999px; box-shadow: 0 10px 24px -10px rgba(10, 60, 33, .6); transition: transform .16s var(--ease-out) }
+  .wa-float:active { transform: scale(.96) }
+  @media (max-width: 860px) { .wa-float { display: inline-flex } }
+</style>

@@ -1,0 +1,56 @@
+---
+import Icon from './Icon.astro'
+import { company, tel } from '../data/products'
+const path = Astro.url.pathname
+const links = [
+  { href: '/equipment/', label: 'Equipment' },
+  { href: '/#process', label: 'By process' },
+  { href: '/#industries', label: 'Industries' },
+  { href: '/#about', label: 'About' },
+]
+const current = (href: string) => (!href.includes('#') && path.startsWith(href) ? 'page' : undefined)
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="/" aria-label="RK Enterprises home"><span class="mark">RK</span><span>Enterprises</span></a>
+    <nav class="nav" aria-label="Main">
+      {links.map((l) => <a href={l.href} aria-current={current(l.href)}>{l.label}</a>)}
+    </nav>
+    <div class="actions">
+      <a class="phone num" href={tel(company.phones[0])}><Icon name="phone" size={16} />{company.phones[0]}</a>
+      <a class="btn btn-primary btn-sm" href="/contact/">Request a quote</a>
+    </div>
+    <details class="mobile-nav">
+      <summary aria-label="Menu"><Icon name="menu" size={22} /></summary>
+      <div class="sheet">
+        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        <a href="/contact/">Request a quote</a>
+        <a class="num" href={tel(company.phones[0])}>{company.phones[0]}</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 20; background: rgba(243, 244, 241, .92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+  .bar { height: var(--header-h); display: flex; align-items: center; gap: 32px }
+  .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--display); font-stretch: 80%; font-weight: 760; text-transform: uppercase; font-size: 19px; letter-spacing: .02em; white-space: nowrap }
+  .mark { background: var(--accent); color: #fff; padding: 4px 6px 3px; font-size: 16px; line-height: 1 }
+  .nav { display: flex; gap: 26px; margin-left: 8px }
+  .nav a { position: relative; text-decoration: none; font-size: 14.5px; font-weight: 500; color: var(--ink-2); padding-block: 6px; transition: color .15s ease }
+  .nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--accent-line); transform: scaleX(0); transform-origin: left; transition: transform .25s var(--ease-out) }
+  .nav a[aria-current='page'] { color: var(--ink) }
+  .nav a[aria-current='page']::after { transform: scaleX(1) }
+  @media (hover: hover) and (pointer: fine) { .nav a:hover { color: var(--ink) } .nav a:hover::after { transform: scaleX(1) } }
+  .actions { margin-left: auto; display: flex; align-items: center; gap: 20px }
+  .phone { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 13.5px; color: var(--ink-2); white-space: nowrap }
+  .mobile-nav { display: none; position: relative }
+  .mobile-nav summary { list-style: none; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer }
+  .mobile-nav summary::-webkit-details-marker { display: none }
+  .mobile-nav .sheet { position: absolute; right: 0; top: 52px; min-width: 240px; background: var(--sheet); border: 1px solid var(--line-strong); box-shadow: 0 16px 32px -16px rgba(19, 33, 42, .35); display: grid; padding: 8px }
+  .mobile-nav .sheet a { padding: 12px; text-decoration: none; font-weight: 500; border-bottom: 1px solid var(--line) }
+  .mobile-nav .sheet a:last-child { border-bottom: 0; color: var(--ink-2) }
+  @media (max-width: 1020px) { .phone { display: none } }
+  @media (max-width: 860px) { .bar { gap: 8px } .nav { display: none } .mobile-nav { display: block } .actions { gap: 8px } }
+  @media (max-width: 400px) { .actions .btn { padding: 0 10px; font-size: 12.5px } .logo { font-size: 17px } }
+</style>

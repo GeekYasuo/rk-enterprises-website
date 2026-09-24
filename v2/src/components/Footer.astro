@@ -1,0 +1,46 @@
+---
+import { company, tel, stages } from '../data/products'
+---
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div>
+      <a class="logo" href="/"><span class="mark">RK</span> Enterprises</a>
+      <p class="muted-f">Process equipment for pharmaceutical, food, chemical and cosmetics production. Vasai-Virar, Maharashtra.</p>
+    </div>
+    <div>
+      <p class="note-f">Equipment</p>
+      <ul>{stages.map((s) => <li><a href={`/equipment/#${s.id}`}>{s.name}</a></li>)}</ul>
+    </div>
+    <div>
+      <p class="note-f">Contact</p>
+      <ul>
+        {company.phones.map((p) => <li><a class="num" href={tel(p)}>{p}</a></li>)}
+        <li><a href={`mailto:${company.email}`}>{company.email}</a></li>
+        <li>{company.hours}</li>
+      </ul>
+    </div>
+    <div>
+      <p class="note-f">Head office</p>
+      <address>{company.address.map((l) => <span>{l}</span>)}</address>
+      <p class="gst num">GST {company.gst}</p>
+    </div>
+  </div>
+  <div class="wrap base"><span>© {new Date().getFullYear()} RK Enterprises</span><span>Made in Vasai-Virar</span></div>
+</footer>
+
+<style>
+  .site-footer { background: var(--ink); color: #DCE3E5; padding-top: 64px }
+  .cols { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px }
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr 1fr } }
+  @media (max-width: 520px) { .cols { grid-template-columns: minmax(0, 1fr) } }
+  .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-family: var(--display); font-stretch: 80%; font-weight: 760; text-transform: uppercase; font-size: 19px }
+  .mark { background: var(--accent-line); color: #fff; padding: 4px 6px 3px; font-size: 16px; line-height: 1 }
+  .muted-f { color: #A9B7BB; font-size: 14.5px; margin-top: 14px; max-width: 34ch }
+  .note-f { font: 500 11.5px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: #8FA0A5; margin-bottom: 12px }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px }
+  a { text-decoration: none; color: #DCE3E5 }
+  @media (hover: hover) { a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px } }
+  address { font-style: normal; display: grid; gap: 2px; font-size: 14.5px }
+  .gst { font-size: 13px; color: #A9B7BB; margin-top: 12px }
+  .base { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 56px; padding-block: 20px calc(20px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid #2A3A43; font-size: 13px; color: #8FA0A5 }
+</style>

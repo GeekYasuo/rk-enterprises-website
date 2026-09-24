@@ -1,0 +1,15 @@
+---
+import Icon from './Icon.astro'
+import { type Product, stageOf } from '../data/products'
+interface Props { product: Product; showStage?: boolean }
+const { product, showStage = false } = Astro.props
+---
+<a class="card" href={`/equipment/${product.slug}/`}>
+  <div class="card-img"><img src={`/machines/${product.image}`} alt={product.name} loading="lazy" decoding="async" /></div>
+  <div class="card-body">
+    {showStage && <span class="note">{stageOf(product.stage).name}</span>}
+    <h3>{product.name}</h3>
+    <p>{product.summary}</p>
+  </div>
+  <div class="card-foot"><span>View details</span><Icon name="arrow" size={16} /></div>
+</a>

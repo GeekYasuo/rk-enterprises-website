@@ -1,0 +1,144 @@
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/* ── Spec Sheet design system ──────────────────────────────────────────
+   Paper, ink and one orange. Machines sit on white "plates"; labels are set
+   like a drawing's annotations. Contrast: ink-3 on paper ≥ 4.5:1,
+   accent on white ≥ 4.5:1 for button text. */
+:root {
+  --paper: #F3F4F1;
+  --sheet: #FFFFFF;
+  --grid: #E2E6E3;
+  --line: #D2D8D6;
+  --line-strong: #A7B2B4;
+  --ink: #13212A;
+  --ink-2: #43525A;
+  --ink-3: #5C6A70;
+  --accent: #C2481A;
+  --accent-hover: #A63C13;
+  --accent-line: #E8622E;
+  --accent-wash: #FBEBE3;
+  --wa: #1B7443;
+  --wa-hover: #155F37;
+
+  --display: 'Archivo Variable', 'Arial Narrow', Arial, sans-serif;
+  --body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1280px;
+  --header-h: 68px;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 16px); scrollbar-color: var(--line-strong) var(--paper) }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth } }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.65 var(--body); -webkit-font-smoothing: antialiased; caret-color: var(--accent) }
+img { max-width: 100%; display: block }
+::selection { background: var(--accent); color: #fff }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px }
+a { color: inherit }
+
+h1, h2, h3, h4 { margin: 0; font-family: var(--display); text-wrap: balance; color: var(--ink) }
+p { margin: 0; text-wrap: pretty }
+
+.display { font-stretch: 72%; font-weight: 760; text-transform: uppercase; letter-spacing: -.005em; line-height: .94 }
+.h1 { font-size: clamp(44px, 7vw, 96px) }
+.h2 { font-size: clamp(32px, 4.4vw, 56px) }
+.h3 { font-family: var(--display); font-stretch: 88%; font-weight: 680; font-size: 20px; line-height: 1.2 }
+.lead { font-size: clamp(17px, 1.4vw, 19px); line-height: 1.6; color: var(--ink-2); max-width: 56ch }
+.muted { color: var(--ink-2) }
+
+/* annotation labels: the drawing's voice, used for real metadata only */
+.note { font: 500 12px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3) }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums }
+
+.wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter) }
+.section { padding-block: clamp(64px, 9vw, 120px) clamp(72px, 10vw, 136px) }
+.section + .section { border-top: 1px solid var(--line) }
+.section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 48px; align-items: end; margin-bottom: clamp(32px, 4vw, 56px) }
+@media (max-width: 800px) { .section-head { grid-template-columns: minmax(0, 1fr) } }
+
+.skip { position: fixed; left: 12px; top: -80px; z-index: 100; background: var(--ink); color: #fff; padding: 10px 14px; font-weight: 600; text-decoration: none; transition: top .2s var(--ease-out) }
+.skip:focus { top: 12px }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 20px; border: 1px solid transparent; font: 600 14px/1 var(--body); letter-spacing: .01em; text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .16s var(--ease-out) }
+.btn:active { transform: scale(.97) }
+.btn .icon { transition: transform .25s var(--ease-out) }
+.btn-primary { background: var(--accent); color: #fff }
+.btn-wa { background: var(--wa); color: #fff }
+.btn-ghost { background: transparent; border-color: var(--ink); color: var(--ink) }
+.btn[aria-disabled="true"] { background: transparent; border: 1px dashed var(--line-strong); color: var(--ink-3); cursor: not-allowed }
+.btn[aria-disabled="true"]:active { transform: none }
+.btn-sm { min-height: 40px; padding: 0 14px; font-size: 13px }
+.link { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--accent-line); padding-bottom: 3px }
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { background: var(--accent-hover) }
+  .btn-wa:hover { background: var(--wa-hover) }
+  .btn-ghost:hover { background: var(--ink); color: #fff }
+  .btn:hover .icon-arrow, .link:hover .icon-arrow { transform: translateX(3px) }
+  .btn:hover .icon-up-right, .link:hover .icon-up-right { transform: translate(2px, -2px) }
+}
+
+/* ── Drawing plate: white sheet with registration corners ── */
+.plate { position: relative; background: var(--sheet); border: 1px solid var(--line) }
+.plate::before, .plate::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--line-strong); border-style: solid; pointer-events: none }
+.plate::before { top: 7px; left: 7px; border-width: 1px 0 0 1px }
+.plate::after { bottom: 7px; right: 7px; border-width: 0 1px 1px 0 }
+.plate img { mix-blend-mode: multiply }
+
+.grid-paper { background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px; background-position: -1px -1px }
+
+/* ── Title block: the table in a drawing's corner, reused for real metadata ── */
+.title-block { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); border: 1px solid var(--line-strong); background: var(--sheet) }
+.title-block > div { padding: 10px 12px; border-left: 1px solid var(--line); min-width: 0 }
+.title-block > div:first-child { border-left: 0 }
+.title-block dt, .title-block .note { display: block; font-size: 10.5px; margin-bottom: 3px }
+.title-block dd { margin: 0; font-weight: 600; font-size: 14px; overflow-wrap: anywhere }
+@media (max-width: 640px) { .title-block { grid-template-columns: repeat(2, minmax(0, 1fr)) } .title-block > div:nth-child(odd) { border-left: 0 } .title-block > div:nth-child(n+3) { border-top: 1px solid var(--line) } }
+
+/* ── Product card ── */
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 1100px) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+@media (max-width: 760px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px } }
+.card { display: flex; flex-direction: column; text-decoration: none; background: var(--sheet); border: 1px solid var(--line); transition: border-color .2s ease }
+.card-img { aspect-ratio: 5 / 4; display: grid; place-items: center; border-bottom: 1px solid var(--line); overflow: hidden }
+.card-img img { max-width: 80%; max-height: 82%; object-fit: contain; mix-blend-mode: multiply; transition: transform .45s var(--ease-out) }
+.card-body { display: grid; gap: 6px; padding: 14px 16px 18px; flex: 1; align-content: start }
+.card-body .note { font-size: 11px }
+.card h3 { font-stretch: 88%; font-weight: 680; font-size: 19px; line-height: 1.15 }
+.card p { font-size: 14px; line-height: 1.5; color: var(--ink-2) }
+.card-foot { display: flex; align-items: center; justify-content: space-between; padding: 0 16px 14px; font-size: 13px; font-weight: 600; color: var(--accent) }
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { border-color: var(--ink) }
+  .card:hover .card-img img { transform: scale(1.04) }
+  .card:hover .icon-arrow { transform: translateX(3px) }
+}
+.card .icon { transition: transform .25s var(--ease-out) }
+@media (max-width: 760px) { .card-body { padding: 12px 12px 14px } .card h3 { font-size: 16px } .card p { font-size: 13px } .card-foot { padding: 0 12px 12px } }
+
+/* ── Chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none }
+.chips li { font: 500 12px/1 var(--mono); padding: 7px 9px; border: 1px solid var(--line-strong); background: var(--sheet); color: var(--ink-2) }
+
+/* ── Forms ── */
+.field { display: grid; gap: 7px }
+.field label, .field legend { font: 500 12px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2) }
+.field .hint { font-size: 13px; color: var(--ink-3) }
+.input { width: 100%; min-height: 48px; padding: 12px 14px; font: 400 16px/1.4 var(--body); color: var(--ink); background: var(--sheet); border: 1px solid var(--line-strong); border-radius: 0; transition: border-color .15s ease, box-shadow .15s ease }
+textarea.input { min-height: 120px; resize: vertical }
+.input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(194, 72, 26, .18) }
+.input[aria-invalid="true"] { border-color: var(--accent) }
+.field .error { font-size: 13px; color: var(--accent); font-weight: 500 }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important }
+}

@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+---
+<Base title="Page Not Found" description="This page doesn't exist. Browse RK Enterprises' equipment or request a quote.">
+  <section class="grid-paper nf">
+    <div class="wrap">
+      <p class="note">Error 404 · Sheet missing</p>
+      <h1 class="display h1">This drawing isn't in our files.</h1>
+      <p class="lead">The page may have moved when we rebuilt the site. Try the equipment catalogue, or tell us what you were looking for.</p>
+      <div class="ctas"><a class="btn btn-primary" href="/equipment/">Browse equipment <Icon name="arrow" size={16} /></a><a class="btn btn-ghost" href="/contact/">Request a quote</a></div>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { padding-block: clamp(72px, 12vw, 160px); border-bottom: 1px solid var(--line) }
+  .nf .wrap { display: grid; gap: 20px; justify-items: start }
+  .ctas { display: flex; flex-wrap: wrap; gap: 10px }
+</style>

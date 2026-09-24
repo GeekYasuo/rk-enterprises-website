@@ -1,0 +1,207 @@
+---
+import Base from '../../layouts/Base.astro'
+import Icon from '../../components/Icon.astro'
+import ProductCard from '../../components/ProductCard.astro'
+import { products, productsIn, stageOf, sheetNo, company, waLink, tel, type Product } from '../../data/products'
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }))
+}
+
+const { product } = Astro.props as { product: Product }
+const stage = stageOf(product.stage)
+const related = productsIn(product.stage).filter((p) => p.slug !== product.slug)
+const waMessage = `Hi RK Enterprises, I'm interested in the ${product.name}. Could you share models and pricing?`
+const quoteHref = `/contact/?machine=${product.slug}`
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description: product.summary,
+  image: new URL(`/machines/${product.image}`, Astro.site).href,
+  category: stage.name,
+  brand: { '@type': 'Brand', name: 'RK Enterprises' },
+  manufacturer: { '@type': 'Organization', name: 'RK Enterprises', telephone: company.phones[0] },
+}
+---
+<Base
+  title={`${product.name} Manufacturer in Vasai-Virar, Mumbai`}
+  description={`${product.name} by RK Enterprises, Vasai-Virar. ${product.summary} Request models, specifications and a quote.`}
+  waMessage={waMessage}
+  schema={schema}>
+
+  <div class="wrap crumbs note">
+    <a href="/equipment/">Equipment</a><span aria-hidden="true">/</span><a href={`/equipment/#${stage.id}`}>{stage.name}</a><span aria-hidden="true">/</span><span aria-current="page">{product.name}</span>
+  </div>
+
+  <section class="wrap top">
+    <figure class="plate shot">
+      <img src={`/machines/${product.image}`} alt={product.name} width="375" height="285" fetchpriority="high" />
+      <figcaption class="note">Sheet <span class="num">{sheetNo(product)}</span> of <span class="num">{products.length}</span></figcaption>
+    </figure>
+
+    <div class="intro">
+      <p class="note">{stage.name}</p>
+      <h1 class="display h2">{product.name}</h1>
+      <p class="lead">{product.summary}</p>
+      {product.applications && (
+        <ul class="chips" aria-label="Typical uses">{product.applications.map((a) => <li>{a}</li>)}</ul>
+      )}
+      <div class="ctas">
+        <a class="btn btn-primary" href={quoteHref}>Request a quote for this machine <Icon name="arrow" size={16} /></a>
+        <a class="btn btn-wa" href={waLink(waMessage)} target="_blank" rel="noopener"><Icon name="chat" size={18} /> WhatsApp us</a>
+        <span class="btn btn-ghost btn-sm" aria-disabled="true" title="Brochure will be added soon"><Icon name="download" size={16} /> Brochure coming soon</span>
+      </div>
+      <p class="call muted">Prefer to talk? Call <a class="num" href={tel(company.phones[0])}>{company.phones[0]}</a> or <a class="num" href={tel(company.phones[1])}>{company.phones[1]}</a></p>
+    </div>
+  </section>
+
+  <nav class="jump" aria-label="On this page"><div class="wrap jump-row">
+    <a href="#specifications">Specifications</a>
+    {product.howItWorks && <a href="#how-it-works">How it works</a>}
+    {product.applications && <a href="#applications">Applications</a>}
+    {related.length > 0 && <a href="#related">Related equipment</a>}
+  </div></nav>
+
+  <section id="specifications" class="wrap block">
+    <div class="block-head">
+      <h2 class="display h3x">Specifications</h2>
+      <p class="muted">Every unit is built to your batch size and process. Tell us your requirement and we'll send the matching model's full data sheet.</p>
+    </div>
+    {product.specs ? (
+      <div class="table-wrap">
+        <table class="spec">
+          <tbody>
+            {product.specs.map((s) => (
+              <tr><th scope="row">{s.label}</th><td class={s.value ? 'num' : 'req'}>{s.value ?? 'On request'}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <div class="plate empty">
+        <p><strong>Specifications are shared per enquiry.</strong> Capacity, dimensions and materials depend on your batch size and product.</p>
+        <a class="link" href={quoteHref}>Ask for the data sheet <Icon name="arrow" size={16} /></a>
+      </div>
+    )}
+  </section>
+
+  {product.howItWorks && (
+    <section id="how-it-works" class="wrap block">
+      <div class="block-head"><h2 class="display h3x">How it works</h2></div>
+      <div class="how">
+        {product.slug === 'sparkler-filter-press' && (
+          <figure class="plate diagram">
+            <svg viewBox="0 0 360 300" role="img" aria-labelledby="dia-t">
+              <title id="dia-t">Simplified section of a sparkler filter press: liquid enters under pressure, passes down through a stack of horizontal filter plates and leaves as clear filtrate through the central outlet.</title>
+              <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#C2481A" /></marker></defs>
+              <g fill="none" stroke="#13212A" stroke-width="1.5">
+                <rect x="100" y="40" width="160" height="200" rx="10" />
+                <path d="M100 70h160" stroke-dasharray="4 4" stroke="#A7B2B4" />
+                {[92, 122, 152, 182, 212].map((y) => <path d={`M114 ${y}h132`} stroke-width="3" />)}
+                <path d="M180 88v140" stroke="#5C6A70" stroke-dasharray="3 3" />
+                <path d="M180 240v34" /><path d="M88 200h40l52-16" stroke="#A7B2B4" stroke-width="1" />
+              </g>
+              <path d="M24 60h72" stroke="#C2481A" stroke-width="2" fill="none" marker-end="url(#ah)" />
+              <path d="M180 250v38" stroke="#1B7443" stroke-width="2" fill="none" marker-end="url(#ah)" />
+              <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#43525A">
+                <text x="24" y="50">1 · INLET</text>
+                <text x="270" y="96">2 · PLATE</text><text x="270" y="110">STACK</text>
+                <text x="10" y="196">3 · CENTRAL</text><text x="10" y="210">CHANNEL</text>
+                <text x="192" y="286">OUTLET · CLEAR FILTRATE</text>
+              </g>
+            </svg>
+            <figcaption class="note">Simplified section, not to scale</figcaption>
+          </figure>
+        )}
+        <ol class="steps">{product.howItWorks.map((s) => <li>{s}</li>)}</ol>
+      </div>
+    </section>
+  )}
+
+  {product.applications && (
+    <section id="applications" class="wrap block">
+      <div class="block-head"><h2 class="display h3x">Applications</h2><p class="muted">Typical uses. Not sure it fits your liquid? Send us a sample description.</p></div>
+      <ul class="apps">{product.applications.map((a) => <li><Icon name="check" size={18} />{a}</li>)}</ul>
+    </section>
+  )}
+
+  <section class="wrap block">
+    <div class="band">
+      <div>
+        <h2 class="display h3x">Get a quote for the {product.name}</h2>
+        <p class="muted">Share your batch size, material and timeline, and we'll recommend the model that fits.</p>
+      </div>
+      <div class="band-ctas">
+        <a class="btn btn-primary" href={quoteHref}>Request a quote <Icon name="arrow" size={16} /></a>
+        <a class="btn btn-wa" href={waLink(waMessage)} target="_blank" rel="noopener"><Icon name="chat" size={18} /> WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section id="related" class="wrap block last">
+      <div class="block-head"><h2 class="display h3x">More {stage.name.toLowerCase()} equipment</h2></div>
+      <div class="cards">{related.map((p) => <ProductCard product={p} />)}</div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .crumbs { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 20px; font-size: 11.5px }
+  .crumbs a { text-decoration: none; color: var(--ink-2) }
+  .crumbs a:hover { color: var(--accent) }
+  .crumbs [aria-current] { color: var(--ink) }
+
+  .top { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 72px); align-items: center; padding-bottom: clamp(40px, 6vw, 72px) }
+  .shot { margin: 0; aspect-ratio: 5 / 4; display: grid; place-items: center }
+  .shot img { width: 78%; height: 78%; object-fit: contain }
+  .shot figcaption { position: absolute; left: 16px; bottom: 12px; font-size: 11px }
+  .intro { display: grid; gap: 18px; align-content: center }
+  .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px }
+  .call { font-size: 14.5px }
+  .call a { font-weight: 500 }
+
+  .jump { position: sticky; top: var(--header-h); z-index: 10; background: var(--paper); border-block: 1px solid var(--line) }
+  .jump-row { display: flex; gap: 24px; overflow-x: auto; scrollbar-width: none }
+  .jump a { flex: none; padding: 14px 0; font-size: 14px; font-weight: 500; color: var(--ink-2); text-decoration: none; border-bottom: 2px solid transparent; transition: color .15s ease, border-color .15s ease }
+  @media (hover: hover) { .jump a:hover { color: var(--ink); border-bottom-color: var(--accent-line) } }
+
+  .block { padding-top: clamp(48px, 6vw, 80px) }
+  .block.last { padding-bottom: clamp(64px, 8vw, 112px) }
+  .block-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px 48px; align-items: end; margin-bottom: 24px }
+  .block-head p { max-width: 56ch }
+  .h3x { font-size: clamp(28px, 3.2vw, 40px) }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line-strong); background: var(--sheet) }
+  .spec { width: 100%; border-collapse: collapse; font-size: 15px }
+  .spec th, .spec td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line) }
+  .spec tr:last-child th, .spec tr:last-child td { border-bottom: 0 }
+  .spec th { width: 40%; font: 500 12.5px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); background: #F8F9F7; border-right: 1px solid var(--line) }
+  .spec td.req { color: var(--ink-3); font-style: italic }
+
+  .empty { padding: 28px; display: grid; gap: 14px; justify-items: start }
+
+  .how { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 56px); align-items: start }
+  .diagram { margin: 0; padding: 20px 20px 36px }
+  .diagram svg { width: 100%; height: auto }
+  .diagram figcaption { position: absolute; left: 16px; bottom: 12px; font-size: 11px }
+  .steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); font-size: 16px; color: var(--ink-2) }
+  .steps li:first-child { border-top: 1px solid var(--line) }
+  .steps li::before { content: counter(s, decimal-leading-zero); font: 500 13px/1.9 var(--mono); color: var(--accent) }
+
+  .apps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0 32px }
+  .apps li { display: flex; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); font-weight: 500 }
+  .apps .icon { color: var(--wa); flex: none }
+
+  .band { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(24px, 4vw, 40px); background: var(--sheet); border: 1px solid var(--line-strong); border-top: 3px solid var(--ink) }
+  .band p { margin-top: 8px }
+  .band-ctas { display: flex; flex-wrap: wrap; gap: 10px }
+
+  @media (max-width: 860px) {
+    .top, .how, .block-head { grid-template-columns: minmax(0, 1fr) }
+    .ctas .btn { flex: 1 1 auto }
+  }
+</style>
