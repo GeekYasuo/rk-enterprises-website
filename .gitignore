@@ -5,3 +5,11 @@ dist
 
 .vercel
 .astro
+
+.astro
+.agents/
+.claude/skills/
+skills-lock.json
+v2/brag-output/
+v2/catalog/*.pdf
+v2/catalog/*.html

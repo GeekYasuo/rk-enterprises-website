@@ -132,6 +132,11 @@ const schema = {
           <a class="btn btn-wa" href={waLink("Hi RK Enterprises, I'd like to discuss equipment for my production line.")} target="_blank" rel="noopener"><Icon name="chat" size={18} /> WhatsApp</a>
         </div>
       </div>
+      <div class="visit-side">
+      <a class="map-card" href={company.mapUrl} target="_blank" rel="noopener" aria-label="Open RK Enterprises location in Google Maps">
+        <iframe title="RK Enterprises location map" loading="lazy" tabindex="-1" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=A1+Industrial+Estate+Kaman+Vasai-Virar+Maharashtra+421302&output=embed"></iframe>
+        <span class="map-cta"><Icon name="up-right" size={14} /> Open in Google Maps</span>
+      </a>
       <dl class="title-block office" style="--cols:2">
         <div class="span"><dt class="note">Head office</dt><dd>{company.address.join(', ')}</dd></div>
         <div><dt class="note">Phone</dt><dd>{company.phones.map((p) => <a class="num" href={tel(p)}>{p}</a>)}</dd></div>
@@ -139,6 +144,7 @@ const schema = {
         <div><dt class="note">GST</dt><dd class="num">{company.gst}</dd></div>
         <div><dt class="note">Directions</dt><dd><a class="link" href={company.mapUrl} target="_blank" rel="noopener">Open in Google Maps <Icon name="up-right" size={14} /></a></dd></div>
       </dl>
+      </div>
     </div>
   </section>
 </Base>
@@ -221,6 +227,12 @@ const schema = {
 
   .visit-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center }
   .visit .ctas { margin-top: 28px }
+  .visit-side { display: grid; gap: 16px; min-width: 0 }
+  .map-card { position: relative; display: block; height: 170px; border: 1px solid var(--line-strong); background: var(--sheet); overflow: hidden }
+  .map-card iframe { width: 100%; height: 100%; border: 0; display: block; pointer-events: none; filter: grayscale(.2) contrast(1.05) }
+  .map-cta { position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 6px; background: var(--ink); color: #fff; font: 600 12.5px var(--body); padding: 8px 12px }
+  .map-cta .icon { color: var(--accent-line) }
+  @media (hover: hover) { .map-card:hover { border-color: var(--ink) } .map-card:hover .map-cta { background: var(--accent) } .map-card:hover .map-cta .icon { color: #fff } }
   .office .span { grid-column: 1 / -1; border-bottom: 1px solid var(--line) }
   .office > div:nth-child(n+2) { border-top: 0 }
   .office > div:nth-child(4) { border-left: 0; border-top: 1px solid var(--line) }

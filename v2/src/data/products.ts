@@ -1,7 +1,8 @@
 // Single source of truth for the catalogue. Adding a machine = adding an entry here.
-// Spec values stay `null` until RK supplies them; pages render null as "On request"
-// rather than inventing numbers. Descriptions explain how each machine type works in
-// general; RK should review them against its own builds.
+// Every machine is built to the customer's use case, so `specs` lists the options RK tailors
+// per order (labels only; pages present them as "what we customise", not a fixed data table).
+// Descriptions explain how each machine type works in general; RK should review them
+// against its own builds.
 
 export type Spec = { label: string; value: string | null }
 
@@ -18,12 +19,13 @@ export type Product = {
   howItWorks: string[]
   specs: Spec[]
   flow?: Flow
+  listing?: { label: string; url: string }
 }
 
 export type StageId = 'liquid' | 'milling' | 'coating' | 'drying' | 'blending' | 'granulation'
 
 export const stages: { id: StageId; name: string; blurb: string; cover: string }[] = [
-  { id: 'liquid', name: 'Liquid processing', blurb: 'Filtration, homogenising and collection for liquid batches.', cover: 'sparkler-filter-press' },
+  { id: 'liquid', name: 'Liquid processing', blurb: 'Filtration, homogenising, gelatin melting and collection for liquid batches.', cover: 'sparkler-filter-press' },
   { id: 'milling', name: 'Milling', blurb: 'Size reduction for consistent particle distribution.', cover: 'colloid-mill' },
   { id: 'coating', name: 'Coating', blurb: 'Coating systems for tablets and pills.', cover: 'coating-pan' },
   { id: 'drying', name: 'Drying', blurb: 'Batch and vacuum drying for heat-sensitive and bulk materials.', cover: 'fluid-bed-dryer' },
@@ -85,6 +87,48 @@ export const products: Product[] = [
     ],
     flow: { in: ['Mother liquor or condensate'], action: 'Collection under vacuum', out: ['Liquid to drain or recovery', 'Vacuum line to pump'] },
     specs: onRequest('Capacity', 'Operating vacuum / pressure', 'Nozzles & connections', 'Sight glass', 'Contact-part material', 'Surface finish'),
+  },
+
+  {
+    slug: 'gelatin-melting-tank', name: 'Gelatin Melting Tank', stage: 'liquid', image: 'gelatin-melting-tank.jpg',
+    summary: 'Stainless steel vacuum tank with heating and stirring for preparing gelatin and V-gel solutions, built to GMP standards. Made in capacities from 50 to 1,000 litres, or to your batch size.',
+    applications: ['Gelatin preparation for softgel and capsule production', 'V-gel formulations', 'GMP-compliant pharmaceutical manufacturing'],
+    howItWorks: [
+      'Gelatin and water are charged into the jacketed tank through its inlet.',
+      'The tank is heated while a stirrer mixes the batch, and vacuum draws out trapped air.',
+      'A thermometer, pressure gauge and safety valve keep temperature and pressure in range.',
+      'The molten gelatin solution is discharged through the outlet to the next stage.',
+    ],
+    flow: { in: ['Gelatin and water'], action: 'Heating, stirring and vacuum', out: ['Uniform gelatin solution'] },
+    specs: onRequest('Capacity', 'Heating (steam / electric)', 'Vacuum stirring', 'Buffer tank', 'Contact-part material', 'Surface finish (mirror / matt)', 'Automation level'),
+    listing: { label: 'View on IndiaMART', url: 'https://www.indiamart.com/proddetail/gelatin-melting-tanks-2853114353155.html' },
+  },
+
+  {
+    slug: 'ointment-manufacturing-plant', name: 'Ointment Manufacturing Plant', stage: 'liquid', image: 'ointment-manufacturing-plant.jpg',
+    summary: 'Complete line for making ointments, creams, lotions and gels: phase preparation tanks, a vacuum homogenising mixer and transfer to holding. Planned around your formulation and batch size.',
+    applications: ['Pharmaceutical ointments and creams', 'Cosmetic creams and lotions', 'Gels and pastes', 'Dermatological and veterinary products'],
+    howItWorks: [
+      'The water phase and oil phase are heated and mixed separately in their own preparation tanks.',
+      'Both phases are drawn under vacuum into the main jacketed mixing vessel.',
+      'A scraper agitator and a high-shear homogeniser blend them into a smooth, stable emulsion.',
+      'The finished batch is cooled in the jacket and transferred to a holding tank ready for filling.',
+    ],
+    flow: { in: ['Water phase', 'Oil phase'], action: 'Vacuum homogenising mixer', out: ['Smooth ointment or cream', 'Transfer to holding tank'] },
+    specs: onRequest('Batch size', 'Vessel and tank sizes', 'Heating and cooling', 'Homogeniser and agitator', 'Vacuum system', 'Automation and controls', 'Contact-part material', 'Cleaning (CIP / manual)'),
+  },
+  {
+    slug: 'liquid-oral-syrup-plant', name: 'Liquid Oral Syrup Manufacturing Plant', stage: 'liquid', image: 'liquid-oral-syrup-plant.jpg',
+    summary: 'Integrated line for syrups, suspensions and oral solutions: sugar dissolving, manufacturing vessel, homogenising, filtration and storage. Configured for your product range and batch size.',
+    applications: ['Syrups and cough preparations', 'Suspensions and antacids', 'Vitamin and nutraceutical liquids', 'Paediatric oral formulations'],
+    howItWorks: [
+      'Sugar and other ingredients are dissolved in a steam-jacketed vessel.',
+      'The solution moves to the manufacturing vessel, where an agitator mixes in the actives and excipients.',
+      'An inline homogeniser and filters give a uniform, clear product.',
+      'The finished liquid is held in a storage tank until it goes to filling.',
+    ],
+    flow: { in: ['Sugar, water and actives'], action: 'Dissolve, mix, homogenise, filter', out: ['Finished oral liquid', 'To storage tank'] },
+    specs: onRequest('Batch size', 'Number and size of vessels', 'Agitators and homogeniser', 'Filtration stages', 'Transfer pumps', 'Automation and controls', 'Contact-part material', 'Cleaning (CIP / SIP)'),
   },
 
   // ── Milling ──
@@ -278,6 +322,19 @@ export const products: Product[] = [
     flow: { in: ['WFI or purified water from generation'], action: 'Hygienic storage', out: ['Distribution loop to points of use'] },
     specs: onRequest('Capacity', 'Orientation', 'Jacket & insulation', 'Vent filter', 'Spray ball', 'Contact-part material', 'Surface finish'),
   },
+  {
+    slug: 'ss-storage-tank', name: 'SS Storage Tank', stage: 'granulation', image: 'ss-storage-tank.jpg',
+    summary: 'Stainless steel tanks for storing liquids, in food, pharma, chemical and cosmetic plants. Made to your capacity, with the fittings and finish your product needs.',
+    applications: ['Process liquids and syrups', 'Water and utility storage', 'Food and beverage ingredients', 'Chemicals and cosmetic bases'],
+    howItWorks: [
+      'Liquid enters the tank through its inlet nozzle.',
+      'The vessel holds it in a closed, cleanable stainless steel body, with a jacket or insulation if the product needs temperature control.',
+      'A vent, level indicator and sampling point let operators monitor the contents.',
+      'Liquid leaves through the bottom outlet valve to the next process step or to filling.',
+    ],
+    flow: { in: ['Process liquid'], action: 'Closed stainless steel storage', out: ['Outlet to next step or filling'] },
+    specs: onRequest('Capacity', 'Orientation (vertical / horizontal)', 'Grade (SS 304 / SS 316L)', 'Jacket and insulation', 'Nozzles and fittings', 'Surface finish', 'Agitator (optional)'),
+  },
 ]
 
 export const stageOf = (id: StageId) => stages.find((s) => s.id === id)!
@@ -286,10 +343,10 @@ export const sheetNo = (p: Product) => String(products.indexOf(p) + 1).padStart(
 
 export const company = {
   name: 'RK Enterprises',
-  phones: ['+91 90288 72590', '+91 90297 51852'],
+  phones: ['+91 90297 51852', '+91 90288 72590'],
   whatsapp: '919028872590',
   email: 'enquiry@rk-enterprises.co',
-  address: ['A-1 Complex, Gala no: B1 - U-16', 'A1 Industrial Estate, Kaman', 'Vasai-Virar, Maharashtra 421302'],
+  address: ['A-1 Complex, B1 - U-16', 'A1 Industrial Estate, Kaman', 'Vasai-Virar, Maharashtra 421302'],
   gst: '27BDTPS0564A1ZE',
   hours: 'Mon – Sat, 9:00 AM – 6:00 PM',
   mapUrl: 'https://www.google.com/maps?q=A1+Industrial+Estate+Kaman+Vasai-Virar+Maharashtra+421302',

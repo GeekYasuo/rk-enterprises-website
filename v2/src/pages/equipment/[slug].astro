@@ -50,14 +50,18 @@ const schema = {
       <div class="ctas">
         <a class="btn btn-primary" href={quoteHref}>Request a quote for this machine <Icon name="arrow" size={16} /></a>
         <a class="btn btn-wa" href={waLink(waMessage)} target="_blank" rel="noopener"><Icon name="chat" size={18} /> WhatsApp us</a>
-        <span class="btn btn-ghost btn-sm" aria-disabled="true" title="Brochure will be added soon"><Icon name="download" size={16} /> Brochure coming soon</span>
+        {product.listing ? (
+          <a class="btn btn-ghost btn-sm" href={product.listing.url} target="_blank" rel="noopener"><Icon name="up-right" size={16} /> {product.listing.label}</a>
+        ) : (
+          <span class="btn btn-ghost btn-sm" aria-disabled="true" title="Brochure will be added soon"><Icon name="download" size={16} /> Brochure coming soon</span>
+        )}
       </div>
       <p class="call muted">Prefer to talk? Call <a class="num" href={tel(company.phones[0])}>{company.phones[0]}</a> or <a class="num" href={tel(company.phones[1])}>{company.phones[1]}</a></p>
     </div>
   </section>
 
   <nav class="jump" aria-label="On this page"><div class="wrap jump-row">
-    <a href="#specifications">Specifications</a>
+    <a href="#specifications">Built to order</a>
     <a href="#how-it-works">How it works</a>
     <a href="#applications">Applications</a>
     {related.length > 0 && <a href="#related">Related equipment</a>}
@@ -65,17 +69,14 @@ const schema = {
 
   <section id="specifications" class="wrap block">
     <div class="block-head">
-      <h2 class="display h3x">Specifications</h2>
-      <p class="muted">Every unit is built to your batch size and process. Tell us your requirement and we'll send the matching model's full data sheet.</p>
+      <h2 class="display h3x">Built to your requirement</h2>
+      <p class="muted">We make every {product.name} to order, sized and specified for your product, batch size and process. There is no fixed model list. Tell us your use case and we'll build to it.</p>
     </div>
-    <div class="table-wrap">
-      <table class="spec">
-        <tbody>
-          {product.specs.map((s) => (
-            <tr><th scope="row">{s.label}</th><td class={s.value ? 'num' : 'req'}>{s.value ?? 'On request'}</td></tr>
-          ))}
-        </tbody>
-      </table>
+    <div class="custom">
+      <p class="note">What we tailor for you</p>
+      <ul class="custom-list">
+        {product.specs.map((s) => <li><Icon name="check" size={18} />{s.label}</li>)}
+      </ul>
     </div>
   </section>
 
@@ -162,12 +163,10 @@ const schema = {
   .block-head p { max-width: 56ch }
   .h3x { font-size: clamp(28px, 3.2vw, 40px) }
 
-  .table-wrap { overflow-x: auto; border: 1px solid var(--line-strong); background: var(--sheet) }
-  .spec { width: 100%; border-collapse: collapse; font-size: 15px }
-  .spec th, .spec td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line) }
-  .spec tr:last-child th, .spec tr:last-child td { border-bottom: 0 }
-  .spec th { width: 40%; font: 500 12.5px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); background: #F8F9F7; border-right: 1px solid var(--line) }
-  .spec td.req { color: var(--ink-3); font-style: italic }
+  .custom { border: 1px solid var(--line-strong); background: var(--sheet); border-top: 3px solid var(--ink); padding: 24px clamp(18px, 3vw, 32px) 28px }
+  .custom-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 32px }
+  .custom-list li { display: flex; gap: 12px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--line); font-weight: 500 }
+  .custom-list .icon { color: var(--accent); flex: none }
 
 
   .how { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 56px); align-items: start }

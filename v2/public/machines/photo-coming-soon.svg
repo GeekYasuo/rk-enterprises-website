@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 285" role="img" aria-label="Photo coming soon">
+  <rect width="375" height="285" fill="#fff"/>
+  <g fill="none" stroke="#A7B2B4" stroke-width="3">
+    <rect x="132" y="82" width="111" height="84" rx="6"/>
+    <circle cx="187.500" cy="124" r="22"/>
+    <path d="M160 82l8-12h39l8 12"/>
+  </g>
+  <text x="187.500" y="214" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5C6A70" letter-spacing="1">PHOTO COMING SOON</text>
+</svg>
