@@ -31,5 +31,27 @@ const fullTitle = title ? `${title} | RK Enterprises` : 'RK Enterprises | Proces
     <main id="main"><slot /></main>
     <Footer />
     <WhatsAppFloat message={waMessage} />
+    <script is:inline>
+      (function () {
+        var root = document.documentElement
+        root.classList.add('js')
+        var header = document.querySelector('.site-header')
+        var onScroll = function () { if (header) header.classList.toggle('scrolled', window.scrollY > 8) }
+        onScroll(); window.addEventListener('scroll', onScroll, { passive: true })
+        var sel = '.stage, .card, .industries li, .process li, .section-head, .about-grid > div, .visit-grid > *, .block, .band'
+        var items = Array.prototype.slice.call(document.querySelectorAll(sel))
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (reduce || !('IntersectionObserver' in window)) return
+        items.forEach(function (el) {
+          var sibs = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0
+          el.style.setProperty('--d', Math.min(sibs, 5) * 55 + 'ms')
+          el.classList.add('reveal')
+        })
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } })
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 })
+        items.forEach(function (el) { io.observe(el) })
+      })()
+    </script>
   </body>
 </html>

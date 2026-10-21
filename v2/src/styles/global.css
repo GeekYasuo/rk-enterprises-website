@@ -139,6 +139,49 @@ textarea.input { min-height: 120px; resize: vertical }
 .input[aria-invalid="true"] { border-color: var(--accent) }
 .field .error { font-size: 13px; color: var(--accent); font-weight: 500 }
 
+/* ── v3 premium layer ──────────────────────────────────────────────── */
+/* Scroll reveal: critically damped feel (no overshoot), staggered by --d. Only when JS runs. */
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease-out) var(--d, 0ms), transform .7s var(--ease-out) var(--d, 0ms) }
+.js .reveal.in { opacity: 1; transform: none }
+
+/* Header: translucent at rest, firmer once content scrolls under it */
+.site-header { transition: box-shadow .3s ease, background-color .3s ease }
+.site-header.scrolled { background: rgba(243, 244, 241, .86); box-shadow: 0 10px 28px -18px rgba(19, 33, 42, .45) }
+
+/* Depth + feedback on cards: lift on hover, respond instantly on press */
+.card { transition: border-color .2s ease, box-shadow .3s var(--ease-out), transform .3s var(--ease-out) }
+.card:active, .stage:active { transform: scale(.985); transition-duration: .1s }
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { transform: translateY(-3px); box-shadow: 0 22px 34px -22px rgba(19, 33, 42, .45) }
+  .stage { transition: border-color .2s ease, box-shadow .3s var(--ease-out), transform .3s var(--ease-out) }
+  .stage:hover { transform: translateY(-3px); box-shadow: 0 22px 34px -22px rgba(19, 33, 42, .4) }
+}
+
+/* Hero: copy rises in sequence on first paint */
+@media (prefers-reduced-motion: no-preference) {
+  .hero .copy > * { animation: rise .75s var(--ease-out) both }
+  .hero .copy > :nth-child(2) { animation-delay: .06s }
+  .hero .copy > :nth-child(3) { animation-delay: .14s }
+  .hero .copy > :nth-child(4) { animation-delay: .22s }
+  .hero .copy > :nth-child(5) { animation-delay: .3s }
+  @keyframes rise { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: none } }
+}
+
+/* Polish: balanced headings, keyboard focus, thumb-reach room above the mobile action bar */
+.display { text-wrap: balance }
+a:focus-visible, button:focus-visible, .input:focus-visible { outline-offset: 3px; border-radius: 2px }
+@media (max-width: 860px) { body { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) } }
+
+/* Accessibility fallbacks (Apple HIG: reduced transparency, increased contrast) */
+@media (prefers-reduced-transparency: reduce) {
+  .site-header, .site-header.scrolled { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none }
+}
+@media (prefers-contrast: more) {
+  :root { --line: #8C999C; --line-strong: #5C6A70; --ink-3: #43525A }
+  .site-header { background: var(--paper) }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important }
+  .js .reveal { opacity: 1 !important; transform: none !important }
 }
